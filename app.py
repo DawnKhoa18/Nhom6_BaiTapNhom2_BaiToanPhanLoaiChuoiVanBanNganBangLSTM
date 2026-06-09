@@ -214,7 +214,7 @@ with tab2:
         if not os.path.exists(path_cm):
             with st.spinner("Đang tải sơ đồ Confusion Matrix từ Drive..."):
                 # THAY ID ẢNH CONFUSION MATRIX CỦA MẠNG LSTM VÀO ĐÂY
-                drive_id_cm = "1c7aXYVH8K60Y52BZBA7cpnd_3bB9JeqE"
+                drive_id_cm = "1_yW0tyUau-zKW668Fcv43K4ivwbcNa6C"
                 url_cm = f"https://drive.google.com/uc?id={drive_id_cm}"
                 gdown.download(url_cm, path_cm, quiet=True)
                 
