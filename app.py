@@ -214,7 +214,7 @@ with tab2:
         if not os.path.exists(path_cm):
             with st.spinner("Đang tải sơ đồ Confusion Matrix từ Drive..."):
                 # THAY ID ẢNH CONFUSION MATRIX CỦA MẠNG LSTM VÀO ĐÂY
-                drive_id_cm = "1D3XoL0rSAJ0HWeseuTJGg5RWpCvCvLks"
+                drive_id_cm = "1c7aXYVH8K60Y52BZBA7cpnd_3bB9JeqE"
                 url_cm = f"https://drive.google.com/uc?id={drive_id_cm}"
                 gdown.download(url_cm, path_cm, quiet=True)
                 
@@ -227,7 +227,7 @@ with tab2:
         if not os.path.exists(path_report):
             with st.spinner("Đang tải sơ đồ Classification Report từ Drive..."):
                 # THAY ID ẢNH CLASSIFICATION REPORT CỦA MẠNG LSTM VÀO ĐÂY
-                drive_id_report = "1D3XoL0rSAJ0HWeseuTJGg5RWpCvCvLks-"
+                drive_id_report = "1D3XoL0rSAJ0HWeseuTJGg5RWpCvCvLks"
                 url_report = f"https://drive.google.com/uc?id={drive_id_report}"
                 gdown.download(url_report, path_report, quiet=True)
                 
