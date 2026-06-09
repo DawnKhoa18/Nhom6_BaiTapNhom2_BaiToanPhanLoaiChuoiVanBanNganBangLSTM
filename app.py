@@ -7,7 +7,8 @@ import string
 import os
 import gdown
 import nltk
-import zipfile  # Thêm thư viện giải nén cấu trúc SavedModel
+import zipfile  # Thư viện giải nén cấu trúc SavedModel
+import pandas as pd  # Thêm pandas để cấu trúc dữ liệu vẽ biểu đồ cột
 from nltk.corpus import stopwords
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
@@ -45,18 +46,18 @@ def clean_text(text):
     cleaned_words = [w for w in words if w not in stop_words]  # Xóa Stopwords
     return " ".join(cleaned_words)
 
-# Ánh xạ nhãn hiển thị cho 10 danh mục của Yahoo Answers
+# Ánh xạ nhãn hiển thị trực quan ngắn gọn cho trục biểu đồ
 TOPIC_MAPPING = {
-    1: "Society & Culture (Xã hội & Văn hóa)",
-    2: "Science & Mathematics (Khoa học & Toán học)",
-    3: "Health (Sức khỏe)",
-    4: "Education & Reference (Giáo dục & Tra cứu)",
-    5: "Computers & Internet (Máy tính & Internet)",
-    6: "Sports (Thể thao)",
-    7: "Business & Finance (Kinh doanh & Tài chính)",
-    8: "Entertainment & Music (Giải trí & Âm nhạc)",
-    9: "Family & Relationships (Gia đình & Mối quan hệ)",
-    10: "Politics & Government (Chính trị & Chính phủ)"
+    1: "Society & Culture",
+    2: "Science & Math",
+    3: "Health",
+    4: "Education & Reference",
+    5: "Computers & Internet",
+    6: "Sports",
+    7: "Business & Finance",
+    8: "Entertainment & Music",
+    9: "Family & Relationships",
+    10: "Politics & Government"
 }
 
 # ----------------------------------------------------------------
@@ -73,7 +74,6 @@ def load_prediction_artifacts():
     if not os.path.exists(model_dir):
         if not os.path.exists(model_zip):
             with st.spinner("Đang tải file nén mô hình từ Google Drive..."):
-                # --- ÔNG NHỚ THAY ID FILE ZIP TRÊN GOOGLE DRIVE CỦA ÔNG VÀO ĐÂY NHÉ ---
                 drive_id_model = "1AZ42RqycaBXszQBQpyDO8sn8JeGkIrKP" 
                 url = f"https://drive.google.com/uc?id={drive_id_model}"
                 gdown.download(url, model_zip, quiet=False)
@@ -127,7 +127,7 @@ st.markdown("### Bài Tập Nhóm 2 - Lớp Thực Hành Deep Learning (Nhóm 6)
 st.write("Mô hình sử dụng mạng học sâu **LSTM (Long Short-Term Memory)** để nhận diện 10 chủ đề chính.")
 st.markdown("---")
 
-col1, col2 = st.columns([1.2, 0.8], gap="large")
+col1, col2 = st.columns([1.1, 0.9], gap="large")
 
 with col1:
     st.subheader("📥 Nhập nội dung văn bản câu hỏi")
@@ -173,21 +173,26 @@ with col2:
                 st.success(f"**Chủ đề được nhận diện:** {predicted_topic}")
                 st.metric(label="Độ tin cậy chính xác (Confidence Score)", value=f"{confidence:.2f}%")
                 
-                # Hộp thông tin mở rộng dòng chảy dữ liệu (Pipeline) để thầy cô chấm điểm cao
-                with st.expander("🔍 Chi tiết quá trình xử lý văn bản (Pipeline)"):
-                    st.write(f"**1. Văn bản gốc:** `{user_input}`")
-                    st.write(f"**2. Sau khi Clear & Lọc Stopwords:** `{cleaned}`")
-                    st.write(f"**3. Vectơ số sau Padding (Độ dài {MAX_LENGTH}):**")
-                    st.code(str(padded[0]))
-
-                # VẼ BIỂU ĐỒ TIẾN TRÌNH XÁC SUẤT BẰNG THANH PROGRESS REAL-TIME
                 st.markdown("---")
-                st.write("**📊 Tỷ lệ phân bổ xác suất trên cả 10 danh mục:**")
+                st.write("**📊 Biểu đồ phân bổ xác suất trên cả 10 danh mục (%):**")
                 
+                # Chuẩn bị dữ liệu đưa vào Dataframe để vẽ sơ đồ cột của Streamlit
+                chart_data = []
                 for idx, prob in enumerate(predictions):
                     topic_name = TOPIC_MAPPING.get(idx + 1, f"Chủ đề {idx+1}")
-                    st.write(f"_{topic_name}_")
-                    st.progress(float(prob))
-                    st.caption(f"Xác suất: {prob*100:.2f}%")
+                    chart_data.append({
+                        "Chủ đề": topic_name,
+                        "Xác suất (%)": float(prob * 100)
+                    })
+                
+                df = pd.DataFrame(chart_data)
+                
+                # Vẽ sơ đồ cột tương tác (Bar Chart) bằng tập hàm native của Streamlit
+                st.bar_chart(
+                    data=df,
+                    x="Chủ đề",
+                    y="Xác suất (%)",
+                    use_container_width=True
+                )
     else:
         st.info("💡 Mời nhập câu test ở ô bên trái, sau đó bấm nút **Tiến Hành Phân Loại** để kiểm tra phản hồi từ mô hình LSTM!")
