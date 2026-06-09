@@ -167,19 +167,6 @@ with tab1:
 
 # TAB ĐÁNH GIÁ HIỆU NĂNG MÔ HÌNH LSTM
 with tab2:
-    st.markdown("## :bar_chart: Kết Quả Thực Nghiệm Mạng Học Sâu LSTM")
-    st.write("Số liệu kiểm thử thực tế mô hình thu được trên tập dữ liệu phân loại văn bản Yahoo Answers.")
-    
-    # Số liệu kiểm thử thực tế của mạng LSTM
-    metric_col1, metric_col2, metric_col3 = st.columns(3)
-    with metric_col1:
-        st.metric(label="Độ chính xác tập Kiểm thử (Test Accuracy)", value="64.00%")
-    with metric_col2:
-        st.metric(label="Độ mất mát tập Kiểm thử (Test Loss)", value="1.1560")
-    with metric_col3:
-        st.metric(label="Kiến trúc mạng", value="LSTM")
-
-    st.markdown("---")
     st.subheader(":bar_chart: Lịch sử Huấn luyện (Training & Validation History)")
     
     # Tải và hiển thị file ảnh chứa sơ đồ Accuracy và Loss từ Drive
